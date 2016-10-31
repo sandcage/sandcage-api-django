@@ -3,7 +3,7 @@
 {% load bootstrap3 %}
 {% block content %}
 {% if form%}
-<form action="{% url 'apigui:files'%}" method="post" class="form">
+<form action="{% url 'apigui:files' %}" method="post" class="form">
     {% csrf_token %}
 
     {% bootstrap_form form %}

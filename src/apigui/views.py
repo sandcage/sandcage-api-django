@@ -28,12 +28,9 @@ def files(request):
 
             # Generate payload
             payload = {}
-            if request.POST['directory']:
-                payload['directory'] = request.POST['directory']
-            if request.POST['page']:
-                payload['page'] = request.POST['page']
-            if request.POST['results_per_page']:
-                payload['results_per_page'] = request.POST['results_per_page']
+            keys = ['directory', 'page', 'results_per_page']
+            for key in keys:
+                add_optional_post_key(request, payload, key)
 
             # And save payload to session
             request.session['payload'] = payload
@@ -68,47 +65,35 @@ def scheduled_tasks(request):
             payload = {}
 
             # optional
-            if request.POST['callback_url']:
-                payload['callback_url'] = request.POST['callback_url']
+            add_optional_post_key(request, payload, 'callback_url')
 
             # Let's parse the task parameters
             task = {'overwrite_file': request.POST['overwrite']}
 
-            # optional
-            if request.POST['reference_id']:
-                task['reference_id'] = request.POST['reference_id']
+            # Add these post variables to task
+            keys = ['reference_id', 'directory', 'filename', 'actions']
+            for key in keys:
+                add_optional_post_key(request, task, key)
 
-            # optional
-            if request.POST['directory']:
-                task['directory'] = request.POST['directory']
-
-            # optional
-            if request.POST['filename']:
-                task['filename'] = request.POST['filename']
-
-            # required
-            action = request.POST['action']
-            task['actions'] = action
-            print ("action {}".format(action))
-
+            actions = task['actions']
             # conditional
-            if action == 'resize' or action == 'cover':
-                if request.POST['resize'] and action != 'cover':
+            if actions == 'resize' or actions == 'cover':
+                if request.POST['resize'] and actions != 'cover':
                     task['resize_percent'] = float(request.POST['resize'])
                 else:
                     task['width'] = request.POST['width']
                     task['height'] = request.POST['height']
 
             # conditional and optional
-            elif action == 'crop' and request.POST['coords']:
+            elif actions == 'crop' and request.POST['coords']:
                 task['coords'] = request.POST['coords']
 
             # conditional and optional
-            elif action == 'rotate' and request.POST['rotation']:
+            elif actions == 'rotate' and request.POST['rotation']:
                 task['rotation'] = request.POST['rotation']
                 
             # conditional and optional
-            if action == 'cover':
+            if actions == 'cover':
                 task['cover'] = ','.join(request.POST.getlist('cover'))
 
             # Add url and task to job, and job to the payload
@@ -129,7 +114,6 @@ def scheduled_tasks(request):
 
         # Take payload from session
         if 'payload' in request.session:
-            print(request.session['payload'])
             results = sc_schedule_files_service(get_apikey(request),
                                     request.session['payload'])
             context['results'] = results
@@ -179,8 +163,8 @@ def info(request):
 
             # Generate payload
             payload = {}
-            if request.POST['request_id']:
-                payload['request_id'] = request.POST['request_id']
+            add_optional_post_key(request, payload, 'request_id')
+
             if request.POST['file_token']:
                 payload['files'] = [{'file_token': request.POST['file_token']}]
 
@@ -215,12 +199,11 @@ def destroy(request):
 
             # Generate payload
             payload = {}
-            if request.POST['request_id']:
-                payload['request_id'] = request.POST['request_id']
+            add_optional_post_key(request, payload, 'request_id')
+            
             if request.POST['file_token']:
                 payload['files'] = [{'file_token': request.POST['file_token']}]
-            if request.POST['callback_url']:
-                payload['callback_url'] = request.POST['callback_url']
+            add_optional_post_key(request, payload, 'callback_url')
 
             # And save payload to session
             request.session['payload'] = payload
@@ -261,3 +244,6 @@ def get_apikey_validity(request):
         request.session['apikey_validity'] = False
         return False
     
+def add_optional_post_key(request, dictionary, key):
+    if request.POST[key]:
+        dictionary[key] = request.POST[key]

@@ -11,6 +11,7 @@ def test_apikey_validity(apikey):
 
     
 def sc_schedule_files_service(apikey, payload):
+    print(payload)
     sc = initialize_sandcage(apikey)
     response = sc.schedule_files_service(payload)
     return process_response(response)

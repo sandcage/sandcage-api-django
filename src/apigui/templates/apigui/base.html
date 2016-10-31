@@ -24,16 +24,16 @@
 		</div>
 		<ul class="nav navbar-nav">
 
-		    <li class="{% if nbar == 'home' %}active{% endif %}"><a href="/apigui">Home</a></li>
-		    <li class="{% if nbar == 'info' %}active{% endif %}"><a href="/apigui/info">Get Info</a></li>
-		    <li class="{% if nbar == 'files' %}active{% endif %}"><a href="/apigui/files">List Files</a></li>
-		    <li class="{% if nbar == 'tasks' %}active{% endif %}"><a href="/apigui/tasks">Schedule Tasks</a></li>
-		    <li class="{% if nbar == 'destroy' %}active{% endif %}"><a href="/apigui/destroy">Destroy Files</a></li>
+		    <li class="{% if nbar == 'home' %}active{% endif %}"><a href="{% url 'apigui:index' %}">Home</a></li>
+		    <li class="{% if nbar == 'info' %}active{% endif %}"><a href="{% url 'apigui:info' %}">Get Info</a></li>
+		    <li class="{% if nbar == 'files' %}active{% endif %}"><a href="{% url 'apigui:files' %}">List Files</a></li>
+		    <li class="{% if nbar == 'tasks' %}active{% endif %}"><a href="{% url 'apigui:tasks' %}">Schedule Tasks</a></li>
+		    <li class="{% if nbar == 'destroy' %}active{% endif %}"><a href="{% url 'apigui:destroy' %}">Destroy Files</a></li>
 		</ul>
 
 		<ul class="nav navbar-nav navbar-right">
 		    <li class="{% if nbar == 'apikey' %}active{% endif %}">
-			<a href="/apigui/apikey">
+			<a href="{% url 'apigui:apikey' %}">
 			    {% if valid_apikey %}
 			    <span id="key-valid" class="glyphicon glyphicon-ok-circle"></span>
 			    {% else %}

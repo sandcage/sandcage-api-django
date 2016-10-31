@@ -12,7 +12,7 @@ class TasksForm(forms.Form):
                                 required=False)
     filename = forms.CharField(label='Output filename', max_length=100,
                                required=False)
-    action = forms.ChoiceField(widget=forms.RadioSelect,
+    actions = forms.ChoiceField(widget=forms.RadioSelect,
                                choices=(('save', 'Save'),
                                         ('resize', 'Resize'),
                                         ('crop', 'Crop'),
