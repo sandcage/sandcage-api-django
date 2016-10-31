@@ -24,7 +24,8 @@ class TasksForm(forms.Form):
                                 required=False)
     resize = forms.FloatField(label='Resize percent', min_value=0.01,
                               max_value=99.99, required=False)
-    coords = forms.CharField(label='Coordinates (x1,y1,x2,y2)', max_length=30, required=False)
+    coords = forms.CharField(label='Coordinates (x1,y1,x2,y2)', max_length=30,
+                             required=False)
     rotation = forms.ChoiceField(widget=forms.RadioSelect,
                                  choices=((90, '90'),
                                           (180, '180'),
