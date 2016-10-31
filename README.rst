@@ -3,11 +3,10 @@ django-sandcage is an demo app of Django UI to SandCage's API. The API documenta
 
 Table of Contents
 -----------------
-* `Requirements <https://github.com/sandcage/sandcage-api-python#requirements>`_
-* `Installation <https://github.com/sandcage/sandcage-api-python#install>`_
-* `Usage <https://github.com/sandcage/sandcage-api-python#usage>`_
-* `Examples <https://github.com/sandcage/sandcage-api-python/tree/master/examples>`_
-* `Contributing <https://github.com/sandcage/sandcage-api-python#contributing>`_
+* `Requirements <https://github.com/sandcage/tree/dev/sandcage-api-django#requirements>`_
+* `Installation <https://github.com/sandcage/tree/dev/sandcage-api-django#installation>`_
+* `Usage <https://github.com/sandcage/tree/dev/sandcage-api-django#usage>`_
+* `Contributing <https://github.com/sandcage/tree/dev/sandcage-api-django#contributing>`_
 * `Contact Us <https://www.sandcage.com/contact>`_
 
 
