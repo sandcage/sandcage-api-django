@@ -1,0 +1,22 @@
+{% extends "apigui/base.html" %}
+
+{% load bootstrap3 %}
+{% block content %}
+{% if apikey %}
+<p><span class="key">SandCage API KEY:</span><span class="value">{{apikey}}</span></p>
+<a href="/apigui/apikey/edit" role="button" class="btn btn-primary">
+    {% bootstrap_icon "star" %} Edit
+</a>
+{% else %}
+<form action="/apigui/apikey/" method="post" class="form">
+    {% csrf_token %}
+
+    {% bootstrap_form form %}
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">
+	{% bootstrap_icon "star" %} Submit
+    </button>
+    {% endbuttons %}
+</form>
+{% endif %}
+{% endblock %}

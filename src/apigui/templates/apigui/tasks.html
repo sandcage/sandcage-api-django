@@ -1,0 +1,108 @@
+{% extends "apigui/base.html" %}
+
+{% load bootstrap3 %}
+{% block content %}
+{% if form%}
+<form action="{% url 'apigui:tasks' %}" method="post" class="form">
+    {% csrf_token %}
+
+    {% bootstrap_form form %}
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">
+	{% bootstrap_icon "star" %} Submit
+    </button>
+    {% endbuttons %}
+</form>
+<script>
+ $(function() {
+     $('#id_width').parent('div').hide(); 
+     $('#id_height').parent('div').hide(); 
+     $('#id_resize').parent('div').hide(); 
+     $('#id_coords').parent('div').hide(); 
+     $('#id_rotation').parent('div').hide(); 
+     $('#id_rotation_0').parent('div').hide(); 
+     $('#id_rotation_1').parent('div').hide(); 
+     $('#id_rotation_2').parent('div').hide(); 
+     $('#id_cover').parent('div').hide(); 
+     $('#id_cover_0').parent('div').hide(); 
+     $('#id_cover_1').parent('div').hide(); 
+     $('#id_cover_2').parent('div').hide(); 
+     $('#id_cover_3').parent('div').hide(); 
+     $('#id_cover_4').parent('div').hide(); 
+     $('#id_cover_5').parent('div').hide(); 
+     $('#id_action').change(function(){
+         if($("#id_action input[type='radio']:checked").val() == 'resize' ||$("#id_action input[type='radio']:checked").val() == 'cover'  ) {
+	     $('#id_width').parent('div').show(); 
+	     $('#id_height').parent('div').show(); 
+	     $('#id_resize').parent('div').show();
+         } else {
+	     $('#id_width').parent('div').hide(); 
+	     $('#id_height').parent('div').hide(); 
+	     $('#id_resize').parent('div').hide();
+         }
+         if($("#id_action input[type='radio']:checked").val() == 'crop') {
+	     $('#id_coords').parent('div').show(); 
+	 } else {
+	     $('#id_coords').parent('div').hide(); 
+	 }
+         if($("#id_action input[type='radio']:checked").val() == 'cover') {
+	     $('#id_resize').parent('div').hide();
+	     $('#id_cover').parent('div').show(); 
+	     $('#id_cover_0').parent('div').show(); 
+	     $('#id_cover_1').parent('div').show(); 
+	     $('#id_cover_2').parent('div').show(); 
+	     $('#id_cover_3').parent('div').show(); 
+	     $('#id_cover_4').parent('div').show(); 
+	     $('#id_cover_5').parent('div').show(); 
+	 } else {
+	     $('#id_cover').parent('div').hide(); 
+	     $('#id_cover_0').parent('div').hide(); 
+	     $('#id_cover_1').parent('div').hide(); 
+	     $('#id_cover_2').parent('div').hide(); 
+	     $('#id_cover_3').parent('div').hide(); 
+	     $('#id_cover_4').parent('div').hide(); 
+	     $('#id_cover_5').parent('div').hide(); 
+	 }
+         if($("#id_action input[type='radio']:checked").val() == 'rotate') {
+	     $('#id_rotation').parent('div').show(); 
+	     $('#id_rotation_0').parent('div').show(); 
+	     $('#id_rotation_1').parent('div').show(); 
+	     $('#id_rotation_2').parent('div').show();
+	 } else {
+	     $('#id_rotation').parent('div').hide(); 
+	     $('#id_rotation_0').parent('div').hide(); 
+	     $('#id_rotation_1').parent('div').hide(); 
+	     $('#id_rotation_2').parent('div').hide(); 
+	 }
+     });
+     $('#id_width').change(function(){
+         if($("#id_action input[type='radio']:checked").val() == 'resize' && $('#id_width').val() == '' &&  $('#id_height').val() == '' ) {
+	     $('#id_resize').parent('div').show();
+	 } else {
+	     $('#id_resize').parent('div').hide();
+	 }
+     });
+     $('#id_height').change(function(){
+         if($().val("#id_action input[type='radio']:checked") == 'resize' && $('#id_width').val() == '' &&  $('#id_height').val() == '' ) {
+	     $('#id_resize').parent('div').show();
+	 } else {
+	     $('#id_resize').parent('div').hide();
+	 }
+     });
+     $('#id_resize').change(function(){
+         if($("#id_action input[type='radio']:checked").val() == 'resize' && $('#id_resize').val() == '') {
+	     $('#id_width').parent('div').show(); 
+	     $('#id_height').parent('div').show(); 
+         } else {
+	     $('#id_width').parent('div').hide(); 
+	     $('#id_height').parent('div').hide(); 
+         }
+     });
+ });
+</script>
+
+{% endif %}
+{% if results %}
+{% include "apigui/response.html" %}
+{% endif %}
+{% endblock %}

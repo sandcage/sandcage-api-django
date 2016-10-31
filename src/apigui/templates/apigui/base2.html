@@ -1,0 +1,47 @@
+{% extends 'apigui/bootstrap.html' %}
+
+{% load bootstrap3 %}
+{% block bootstrap3_content %}
+
+<head>
+{% load static %}
+
+{% load compress %}
+{% compress css %}
+<link rel="stylesheet" type="text/x-scss" href="{% static "apigui/style.scss" %}" />
+    
+{% endcompress %}
+
+    
+</head>
+<body>
+    <header>
+	<nav class="navbar navbar-default">
+	    <div class="container-fluid">
+		<div class="navbar-header">
+		    <a class="navbar-brand" href="#">SandCage API test</a>
+		</div>
+		<ul class="nav navbar-nav">
+
+		    <li class="{% if nbar == 'home' %}active{% endif %}"><a href="/apigui">Home</a></li>
+		    <li class="{% if nbar == 'info' %}active{% endif %}"><a href="/apigui/info">Get Info</a></li>
+		    <li class="{% if nbar == 'files' %}active{% endif %}"><a href="/apigui/files">List files</a></li>
+		    <li><a href="#">Page 3</a></li> 
+		</ul>
+
+		<ul class="nav navbar-nav navbar-right">
+		    <li><a href="#"><span class="glyphicon glyphicon-keys"></span> API KEY</a></li>
+    </ul>
+ 
+	    </div>
+	</nav>
+	
+    </header>
+    {% block content %}
+    {% endblock %}
+    <footer>
+
+	<span>This is footer</span>
+    </footer>
+
+{% endblock %}

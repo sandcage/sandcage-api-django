@@ -1,0 +1,90 @@
+    <div class="container">
+	<div class="row">
+
+	    <div class"col-md-12">
+		<h3>Response</h3>
+		<ul>
+		    {% if 'status' in results %}
+		    <li>
+			<span class="key">Status: </span>
+			<span class="value">{{results.status}}</span>
+		    </li>
+		{% endif %}
+		{% if 'request_id' in results %}
+		    <li>
+			<span class="key">Request Id: </span>
+			<span class="value">{{results.request_id}}</span>
+		    </li>
+		{% endif %}
+		    {% if 'error_msg' in results %}
+		    <li>
+			<span class="key">Error message: </span>
+			<ul>
+			    {% for error in results.error_msg %}
+			    {% for key, value in error.items %}
+			    <li>
+				<span class="key">{{key}}:</span>
+				<span class="value">{{value}}</span>
+			    </li>
+			    {% endfor %}
+			    {% endfor %}
+			</ul>
+			
+		    </li>
+		    {% endif %}
+		    {% if 'warning_msg' in results %}
+		    <li>
+			<span class="key">Warning message: </span>
+			<ul>
+			    {% for warning in results.warning_msg %}
+			    {% for key, value in warning.items %}
+			    <li>
+				<span class="key">{{key}}:</span>
+				<span class="value">{{value}}</span>
+			    </li>
+			    {% endfor %}
+			    {% endfor %}
+			</ul>
+			
+		    </li>
+		    {% endif %}
+		    {% if 'files' in results %}
+		    <li>
+			<span class="key">Files: </span>
+			<ul>
+			    {% for file in results.files %}
+			    {% if file.status == 'processed' %}
+			    <img src="{{file.url}}" alt="">
+			    {% endif %}
+			    {% for key, value in file.items %}
+			    <li>
+				<span class="key">{{key}}:</span>
+				<span class="value">{{value}}</span>
+			    </li>
+			    {% endfor %}
+			    <div class="space"></div>
+			    {% endfor %}
+			</ul>
+			
+		    </li>
+		    {% endif %}
+		    {% if 'tasks' in results %}
+		    <li>
+			<span class="key">Tasks: </span>
+			<ul>
+			    {% for task in results.tasks %}
+			    {% for key, value in task.items %}
+			    <li>
+				<span class="key">{{key}}:</span>
+				<span class="value">{{value}}</span>
+			    </li>
+			    {% endfor %}
+			    {% endfor %}
+			</ul>
+			
+		    </li>
+		    {% endif %}
+		</ul>
+	    </div>
+	</div>
+    </div>

@@ -1,0 +1,8 @@
+bin*
+include*
+lib*
+share*
+*CACHE*
+*db.sqlite3
+*~
+*.pyc

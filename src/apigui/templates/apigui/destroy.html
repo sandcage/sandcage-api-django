@@ -1,0 +1,20 @@
+{% extends "apigui/base.html" %}
+
+{% load bootstrap3 %}
+{% block content %}
+{% if form%}
+<form action="{% url 'apigui:destroy'%}" method="post" class="form">
+    {% csrf_token %}
+
+    {% bootstrap_form form %}
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">
+	{% bootstrap_icon "star" %} Submit
+    </button>
+    {% endbuttons %}
+</form>
+{% endif %}
+{% if results %}
+{% include "apigui/response.html" %}
+{% endif %}
+{% endblock %}
