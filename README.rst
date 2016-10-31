@@ -30,7 +30,7 @@ Requirements
 
 In order to make use of the software you need a SandCage API Key. Once logged into SandCage, you can get your API Key from `here <https://www.sandcage.com/panel/api_key>`_.
 
-Install
+Installation
 -------
 This example is using virtual environment (this is not the only possible way to go)::
 
@@ -38,46 +38,21 @@ This example is using virtual environment (this is not the only possible way to 
   cd virtual3
   source bin/activate
   git clone path_to_package
+  cd sandcage-django
+  pip install -r requirements.txt
+  cd src
+  python manage.py migrate
+
   
-Using pip::
-
-  pip install sandcage
-
-or alternatively clone and install::
-
-  git clone https://github.com/sandcage/sandcage-api-python
-  cd sandcage-api-python
-  python setup.py install
-
 Usage
 -----
 
-Simply::
+Run the Django test server at source code directory by::
+
+  python manage.py runserver
+
+Then navigate to address http://127.0.0.1:8000
   
-  from sandcage import SandCage
-
-  sc = SandCage('[YOUR_SANDCAGE_API_KEY]')
-  sc.list_files_service()
-
-See more `examples <https://github.com/sandcage/sandcage-api-python/tree/master/examples>`_
-
-To not include YOUR_SANDCAGE_API_KEY into your code you can for example save it as a file named SANDCAGE_API_KEY into your home directory::
-
-  cd ~
-  echo YOUR_SANDCAGE_API_KEY > SANDCAGE_API_KEY
-
-and then use the following code to initialize SandCage::
-
-  import os.path
-  from sandcage import SandCage
-
-  api_key_dir = os.path.expanduser('~')
-  api_key_file = os.path.join(api_key_dir, 'SANDCAGE_API_KEY')
-  with open(api_key_file, 'r') as f:
-      api_key = f.readline()
-
-  sc = SandCage(api_key=api_key)
-
 Contributing
 ------------
 
