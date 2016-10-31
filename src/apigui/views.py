@@ -18,7 +18,7 @@ from .services import sc_schedule_files_service
 
 def index(request):
     context = {'nbar': 'home',
-               'valid_apikey': request.session['apikey_validity']}
+               'valid_apikey': get_apikey_validity(request)}
     return render(request, 'apigui/index.html', context)
 
 def files(request):
@@ -41,7 +41,7 @@ def files(request):
     else:
         # GET (show results, or display the input form)
         context = {'nbar': 'files',
-                   'valid_apikey': request.session['apikey_validity']}
+                   'valid_apikey': get_apikey_validity(request)}
         
 
         # Take payload from session
@@ -120,12 +120,12 @@ def scheduled_tasks(request):
             return HttpResponseRedirect(reverse('apigui:tasks'))
         else:
             context = {'nbar': 'tasks',
-                       'valid_apikey': request.session['apikey_validity'],
+                       'valid_apikey': get_apikey_validity(request),
                        'form': form}
     else:
         # GET (show results, or display the input form)
         context = {'nbar': 'tasks',
-                   'valid_apikey': request.session['apikey_validity']}
+                   'valid_apikey': get_apikey_validity(request)}
 
         # Take payload from session
         if 'payload' in request.session:
@@ -145,7 +145,7 @@ def scheduled_tasks(request):
 def edit_apikey(request):
     form = ApiKeyForm(initial={'apikey': request.session['apikey']})
     context = {'nbar': 'apikey',
-               'valid_apikey': request.session['apikey_validity'],
+               'valid_apikey': get_apikey_validity(request),
                'form': form}
     return render(request, 'apigui/apikey.html', context)
     
@@ -165,7 +165,7 @@ def apikey(request):
     
     form = ApiKeyForm()
     context = {'nbar': 'apikey',
-               'valid_apikey': request.session['apikey_validity'],
+               'valid_apikey': get_apikey_validity(request),
                'form': form}
     if 'apikey' in request.session:
         context.update({'apikey': request.session['apikey']})
@@ -190,7 +190,7 @@ def info(request):
     else:
         # GET (show results, or display form for input)
         context = {'nbar': 'info',
-                   'valid_apikey': request.session['apikey_validity']}
+                   'valid_apikey': get_apikey_validity(request)}
 
 
         # Take payload from session
@@ -228,7 +228,7 @@ def destroy(request):
     else:
         # GET (show results, or display form for input)
         context = {'nbar': 'destroy',
-                   'valid_apikey': request.session['apikey_validity']}
+                   'valid_apikey': get_apikey_validity(request)}
 
         # Take payload from session
         if 'payload' in request.session:
@@ -253,3 +253,11 @@ def get_apikey(request):
         return request.session['apikey']
     else:
         return None
+
+def get_apikey_validity(request):
+    if 'apikey_validity' in request.session:
+        return request.session['apikey_validity']
+    else:
+        request.session['apikey_validity'] = False
+        return False
+    

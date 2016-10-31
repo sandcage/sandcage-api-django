@@ -1,13 +1,3 @@
-.. image:: https://d18m5nnl28b2pp.cloudfront.net/p/a/img/header.png
-
--------------------------------------------------------------------
-
-
-.. image:: https://scrutinizer-ci.com/g/sandcage/sandcage-api-python/badges/quality-score.png?b=master
-    :target: https://scrutinizer-ci.com/g/sandcage/sandcage-api-python/?branch=master
-.. image:: https://travis-ci.org/sandcage/sandcage-api-python.svg?branch=master
-    :target: https://travis-ci.org/sandcage/sandcage-api-python
-
 django-sandcage is an demo app of Django UI to SandCage's API. The API documentation can be found at `SandCage's API documentation <https://www.sandcage.com/docs/0.2/>`_
 
 
