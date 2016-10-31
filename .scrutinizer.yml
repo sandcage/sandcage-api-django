@@ -1,7 +1,3 @@
-filter:
-  excluded_paths:
-    - tests/*
-    - examples/*
 checks:
     python:
         code_rating: true
