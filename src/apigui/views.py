@@ -56,59 +56,63 @@ def files(request):
             
     return render(request, 'apigui/files.html', context)
 
+def scheduled_tasks_post(request):
+    form = TasksForm(request.POST)
+    if not form.is_valid():
+        # The form is not valid
+        context = {'nbar': 'tasks',
+                   'valid_apikey': get_apikey_validity(request),
+                   'form': form}
+        return render(request, 'apigui/tasks.html', context)
+    
+    # The form is valid    
+    # Generate payload
+    payload = {}
+
+    # optional
+    add_optional_post_key(request, payload, 'callback_url')
+
+    # Let's parse the task parameters
+    task = {'overwrite_file': request.POST['overwrite']}
+
+    # Add these post variables to task
+    keys = ['reference_id', 'directory', 'filename', 'actions']
+    for key in keys:
+        add_optional_post_key(request, task, key)
+
+    actions = task['actions']
+    # conditional
+    if actions == 'resize' or actions == 'cover':
+        if request.POST['resize'] and actions != 'cover':
+            task['resize_percent'] = float(request.POST['resize'])
+        else:
+            task['width'] = request.POST['width']
+            task['height'] = request.POST['height']
+
+    # conditional and optional
+    elif actions == 'crop' and request.POST['coords']:
+        task['coords'] = request.POST['coords']
+
+    # conditional and optional
+    elif actions == 'rotate' and request.POST['rotation']:
+        task['rotation'] = request.POST['rotation']
+                
+    # conditional and optional
+    if actions == 'cover':
+        task['cover'] = ','.join(request.POST.getlist('cover'))
+
+    # Add url and task to job, and job to the payload
+    payload['jobs'] = [{'url': request.POST['url'],
+                        'tasks':[task]}]
+            
+    # And save payload to session
+    request.session['payload'] = payload
+    return HttpResponseRedirect(reverse('apigui:tasks'))
+    
 def scheduled_tasks(request):
     if request.method == 'POST':
-        form = TasksForm(request.POST)
-        if form.is_valid():
+        scheduled_tasks_post(request)
 
-            # Generate payload
-            payload = {}
-
-            # optional
-            add_optional_post_key(request, payload, 'callback_url')
-
-            # Let's parse the task parameters
-            task = {'overwrite_file': request.POST['overwrite']}
-
-            # Add these post variables to task
-            keys = ['reference_id', 'directory', 'filename', 'actions']
-            for key in keys:
-                add_optional_post_key(request, task, key)
-
-            actions = task['actions']
-            # conditional
-            if actions == 'resize' or actions == 'cover':
-                if request.POST['resize'] and actions != 'cover':
-                    task['resize_percent'] = float(request.POST['resize'])
-                else:
-                    task['width'] = request.POST['width']
-                    task['height'] = request.POST['height']
-
-            # conditional and optional
-            elif actions == 'crop' and request.POST['coords']:
-                task['coords'] = request.POST['coords']
-
-            # conditional and optional
-            elif actions == 'rotate' and request.POST['rotation']:
-                task['rotation'] = request.POST['rotation']
-                
-            # conditional and optional
-            if actions == 'cover':
-                task['cover'] = ','.join(request.POST.getlist('cover'))
-
-            # Add url and task to job, and job to the payload
-            payload['jobs'] = [{'url': request.POST['url'],
-                                'tasks':[task]}]
-            
-            # And save payload to session
-            request.session['payload'] = payload
-            return HttpResponseRedirect(reverse('apigui:tasks'))
-
-        # The form is not valid
-        else:
-            context = {'nbar': 'tasks',
-                       'valid_apikey': get_apikey_validity(request),
-                       'form': form}
     else:
         # GET (show results, or display the input form)
         context = {'nbar': 'tasks',
