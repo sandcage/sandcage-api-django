@@ -1,15 +1,20 @@
-from django.test import LiveServerTestCase
-from selenium import webdriver
+#from django.test import LiveServerTestCase
+#from selenium import webdriver
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from selenium.webdriver.firefox.webdriver import WebDriver
 
-class SeleniumTestCase(LiveServerTestCase):
+class SeleniumTestCase(StaticLiveServerTestCase):
 
-    def setUp(cls):
-        cls.client = webdriver.Chrome()
-        super(SeleniumTestCase, cls).setUp()
+    @classmethod
+    def setUpClass(cls):
+        super(SeleniumTestCase, cls).setUpClass()
+        cls.client = WebDriver()
+        cls.client.implicitly_wait(10)
 
-    def tearDown(cls):
+    @classmethod
+    def tearDownClass(cls):
         cls.client.quit()
-        super(SeleniumTestCase, cls).tearDown()
+        super(SeleniumTestCase, cls).tearDownClass()
 
 
     def case_for_all_functions(self, address, should_find):
