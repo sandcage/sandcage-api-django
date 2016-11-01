@@ -82,24 +82,27 @@ def scheduled_tasks_post(request):
 
     actions = task['actions']
     # conditional
-    if actions == 'resize' or actions == 'cover':
-        if request.POST['resize'] and actions != 'cover':
+    if actions == 'resize':
+        if request.POST['resize']:
             task['resize_percent'] = float(request.POST['resize'])
         else:
             task['width'] = request.POST['width']
             task['height'] = request.POST['height']
 
     # conditional and optional
-    elif actions == 'crop' and request.POST['coords']:
+    if actions == 'crop' and request.POST['coords']:
         task['coords'] = request.POST['coords']
 
     # conditional and optional
-    elif actions == 'rotate' and request.POST['rotation']:
+    if actions == 'rotate' and request.POST['rotation']:
         task['rotation'] = request.POST['rotation']
                 
     # conditional and optional
     if actions == 'cover':
         task['cover'] = ','.join(request.POST.getlist('cover'))
+        add_optional_post_key(request, task, 'width')
+        add_optional_post_key(request, task, 'height')
+
 
     # Add url and task to job, and job to the payload
     payload['jobs'] = [{'url': request.POST['url'],
