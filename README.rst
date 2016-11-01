@@ -24,6 +24,7 @@ Requirements
 - rcssmin==1.0.6
 - requests==2.11.1
 - rjsmin==1.0.12
+- selenium==3.0.1
 - sandcage==0.2.0
 - six==1.10.0
 
