@@ -59,7 +59,7 @@ def files(request):
 def scheduled_tasks_post(request):
     form = TasksForm(request.POST)
     if not form.is_valid():
-        # The form is not valid
+        # The form is not valid, so show it again to the user
         context = {'nbar': 'tasks',
                    'valid_apikey': get_apikey_validity(request),
                    'form': form}
@@ -69,11 +69,11 @@ def scheduled_tasks_post(request):
     # Generate payload
     payload = {}
 
-    # optional
+    # optional key
     add_optional_post_key(request, payload, 'callback_url')
 
     # Let's parse the task parameters
-    task = {'overwrite_file': request.POST['overwrite']}
+    task = {'overwrite_file': request.POST['overwrite_file']}
 
     # Add these post variables to task
     keys = ['reference_id', 'directory', 'filename', 'actions']
@@ -83,19 +83,19 @@ def scheduled_tasks_post(request):
     actions = task['actions']
     # conditional
     if actions == 'resize':
-        if request.POST['resize']:
-            task['resize_percent'] = float(request.POST['resize'])
+        if request.POST['resize_percent']:
+            task['resize_percent'] = float(request.POST['resize_percent'])
         else:
             task['width'] = request.POST['width']
             task['height'] = request.POST['height']
 
     # conditional and optional
-    if actions == 'crop' and request.POST['coords']:
-        task['coords'] = request.POST['coords']
+    if actions == 'crop':
+        add_optional_post_key(request, task, 'coords')
 
     # conditional and optional
-    if actions == 'rotate' and request.POST['rotation']:
-        task['rotation'] = request.POST['rotation']
+    if actions == 'rotate':
+        add_optional_post_key(request, task, 'rotation')
                 
     # conditional and optional
     if actions == 'cover':

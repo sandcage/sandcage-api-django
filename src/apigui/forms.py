@@ -5,7 +5,7 @@ class TasksForm(forms.Form):
                          required=True)
     reference_id = forms.CharField(label='Reference Id', max_length=100,
                                    required=False)
-    overwrite = forms.ChoiceField(widget=forms.RadioSelect,
+    overwrite_file = forms.ChoiceField(widget=forms.RadioSelect,
                                   choices=((False,'No'),
                                            (True,'Yes')), initial=False)
     directory = forms.CharField(label='Output directory', max_length=100,
@@ -22,7 +22,7 @@ class TasksForm(forms.Form):
                                required=False)
     height = forms.IntegerField(label='Height', min_value=0, max_value=10000,
                                 required=False)
-    resize = forms.FloatField(label='Resize percent', min_value=0.01,
+    resize_percent = forms.FloatField(label='Resize percent', min_value=0.01,
                               max_value=99.99, required=False)
     coords = forms.CharField(label='Coordinates (x1,y1,x2,y2)', max_length=30,
                              required=False)
