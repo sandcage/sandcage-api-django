@@ -167,28 +167,32 @@ def apikey(request):
         
     return render(request, 'apigui/apikey.html', context)
 
-def info(request): 
-    context = get_common_context(request, 'info')
+def info_post(request):
+    form = InfoForm(request.POST)
+    if not form.is_valid():
+        context = get_common_context(request, 'info')
+        context['form'] = form
+        return render(request, 'apigui/info.html', context)
+        
+    # Generate payload
+    payload = {}
+    add_optional_post_key(request, payload, 'request_id')
+
+    if request.POST['file_token']:
+        payload['files'] = [{'file_token': request.POST['file_token']}]
+
+    # And save payload to session
+    request.session['payload'] = payload
+    return HttpResponseRedirect(reverse('apigui:info'))
+    
+def info(request):
     if request.method == 'POST':
-        form = InfoForm(request.POST)
-        if form.is_valid():
-
-            # Generate payload
-            payload = {}
-            add_optional_post_key(request, payload, 'request_id')
-
-            if request.POST['file_token']:
-                payload['files'] = [{'file_token': request.POST['file_token']}]
-
-            # And save payload to session
-            request.session['payload'] = payload
-            return HttpResponseRedirect(reverse('apigui:info'))
-        else:
-            context['form'] = form
-            
+        return info_post(request)
+    
     else:
         # GET (show results, or display form for input)
         # Take payload from session
+        context = get_common_context(request, 'info')
         if 'payload' in request.session:
             results = sc_get_info_service(get_apikey(request),
                                     request.session['payload'])
@@ -201,7 +205,7 @@ def info(request):
             form = InfoForm()
             context['form'] = form
             
-    return render(request, 'apigui/info.html', context)
+        return render(request, 'apigui/info.html', context)
 
 def destroy(request):
     context = get_common_context(request, 'destroy')
