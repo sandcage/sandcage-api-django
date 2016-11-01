@@ -103,6 +103,8 @@ def scheduled_tasks(request):
             # And save payload to session
             request.session['payload'] = payload
             return HttpResponseRedirect(reverse('apigui:tasks'))
+
+        # The form is not valid
         else:
             context = {'nbar': 'tasks',
                        'valid_apikey': get_apikey_validity(request),
@@ -139,7 +141,6 @@ def apikey(request):
         if form.is_valid():
             apikey = request.POST['apikey']
 
-            # Save apiky to session
             # Test the validity and save to session
             request.session['apikey_validity'] = test_apikey_validity(apikey)
             # Save apikey to session
@@ -157,6 +158,8 @@ def apikey(request):
     return render(request, 'apigui/apikey.html', context)
 
 def info(request): 
+    context = {'nbar': 'info',
+               'valid_apikey': get_apikey_validity(request)}
     if request.method == 'POST':
         form = InfoForm(request.POST)
         if form.is_valid():
@@ -171,12 +174,11 @@ def info(request):
             # And save payload to session
             request.session['payload'] = payload
             return HttpResponseRedirect(reverse('apigui:info'))
+        else:
+            context['form'] = form
+            
     else:
         # GET (show results, or display form for input)
-        context = {'nbar': 'info',
-                   'valid_apikey': get_apikey_validity(request)}
-
-
         # Take payload from session
         if 'payload' in request.session:
             results = sc_get_info_service(get_apikey(request),
@@ -192,26 +194,11 @@ def info(request):
             
     return render(request, 'apigui/info.html', context)
 
-def destroy(request): 
-    if request.method == 'POST':
-        form = DestroyFilesForm(request.POST)
-        if form.is_valid():
-
-            # Generate payload
-            payload = {}
-            add_optional_post_key(request, payload, 'request_id')
-            
-            if request.POST['file_token']:
-                payload['files'] = [{'file_token': request.POST['file_token']}]
-            add_optional_post_key(request, payload, 'callback_url')
-
-            # And save payload to session
-            request.session['payload'] = payload
-            return HttpResponseRedirect(reverse('apigui:destroy'))
-    else:
-        # GET (show results, or display form for input)
-        context = {'nbar': 'destroy',
-                   'valid_apikey': get_apikey_validity(request)}
+def destroy(request):
+    context = {'nbar': 'destroy',
+               'valid_apikey': get_apikey_validity(request)}
+    if request.method == 'GET':
+        # GET (show request response, or display form for input)
 
         # Take payload from session
         if 'payload' in request.session:
@@ -222,10 +209,28 @@ def destroy(request):
             # Delete the already used payload from the session
             del request.session['payload']
         else:
-            # Display the form for data
+            # Display the form for user input
             form = DestroyFilesForm()
             context['form'] = form
+
+    else:
+        # Request is POST
+        form = DestroyFilesForm(request.POST)
+        if form.is_valid():
+            # Generate payload
+            payload = {}
+            add_optional_post_key(request, payload, 'callback_url')
+            add_optional_post_key(request, payload, 'request_id')
             
+            if request.POST['file_token']:
+                payload['files'] = [{'file_token': request.POST['file_token']}]
+
+            # Save payload to session
+            request.session['payload'] = payload
+            return HttpResponseRedirect(reverse('apigui:destroy'))
+        else:
+            # If the form is not valid, display it again
+            context['form'] = form
     return render(request, 'apigui/destroy.html', context)
 
 def tasks(request):
