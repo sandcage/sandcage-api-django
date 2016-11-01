@@ -5,13 +5,11 @@ def initialize_sandcage(apikey):
 
 def test_apikey_validity(apikey):
     sc = initialize_sandcage(apikey)
-    payload={}
+    payload = {}
     response = sc.list_files_service(payload)
     return not 'error_msg' in process_response(response)
-
     
 def sc_schedule_files_service(apikey, payload):
-    print(payload)
     sc = initialize_sandcage(apikey)
     response = sc.schedule_files_service(payload)
     return process_response(response)

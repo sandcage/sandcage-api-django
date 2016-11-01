@@ -17,12 +17,12 @@
  $(function() {
      $('#id_width').parent('div').hide(); 
      $('#id_height').parent('div').hide(); 
-     $('#id_resize').parent('div').hide(); 
+     $('#id_resize_percent').parent('div').hide(); 
      $('#id_coords').parent('div').hide(); 
-     $('#id_rotation').parent('div').hide(); 
-     $('#id_rotation_0').parent('div').hide(); 
-     $('#id_rotation_1').parent('div').hide(); 
-     $('#id_rotation_2').parent('div').hide(); 
+     $('#id_degrees').parent('div').hide(); 
+     $('#id_degrees_0').parent('div').hide(); 
+     $('#id_degrees_1').parent('div').hide(); 
+     $('#id_degrees_2').parent('div').hide(); 
      $('#id_cover').parent('div').hide(); 
      $('#id_cover_0').parent('div').hide(); 
      $('#id_cover_1').parent('div').hide(); 
@@ -30,23 +30,23 @@
      $('#id_cover_3').parent('div').hide(); 
      $('#id_cover_4').parent('div').hide(); 
      $('#id_cover_5').parent('div').hide(); 
-     $('#id_action').change(function(){
-         if($("#id_action input[type='radio']:checked").val() == 'resize' ||$("#id_action input[type='radio']:checked").val() == 'cover'  ) {
+     $('#id_actions').change(function(){
+         if($("#id_actions input[type='radio']:checked").val() == 'resize' ||$("#id_actions input[type='radio']:checked").val() == 'cover'  ) {
 	     $('#id_width').parent('div').show(); 
 	     $('#id_height').parent('div').show(); 
-	     $('#id_resize').parent('div').show();
+	     $('#id_resize_percent').parent('div').show();
          } else {
 	     $('#id_width').parent('div').hide(); 
 	     $('#id_height').parent('div').hide(); 
-	     $('#id_resize').parent('div').hide();
+	     $('#id_resize_percent').parent('div').hide();
          }
-         if($("#id_action input[type='radio']:checked").val() == 'crop') {
+         if($("#id_actions input[type='radio']:checked").val() == 'crop') {
 	     $('#id_coords').parent('div').show(); 
 	 } else {
 	     $('#id_coords').parent('div').hide(); 
 	 }
-         if($("#id_action input[type='radio']:checked").val() == 'cover') {
-	     $('#id_resize').parent('div').hide();
+         if($("#id_actions input[type='radio']:checked").val() == 'cover') {
+	     $('#id_resize_percent').parent('div').hide();
 	     $('#id_cover').parent('div').show(); 
 	     $('#id_cover_0').parent('div').show(); 
 	     $('#id_cover_1').parent('div').show(); 
@@ -63,34 +63,34 @@
 	     $('#id_cover_4').parent('div').hide(); 
 	     $('#id_cover_5').parent('div').hide(); 
 	 }
-         if($("#id_action input[type='radio']:checked").val() == 'rotate') {
-	     $('#id_rotation').parent('div').show(); 
-	     $('#id_rotation_0').parent('div').show(); 
-	     $('#id_rotation_1').parent('div').show(); 
-	     $('#id_rotation_2').parent('div').show();
+         if($("#id_actions input[type='radio']:checked").val() == 'rotate') {
+	     $('#id_degrees').parent('div').show(); 
+	     $('#id_degrees_0').parent('div').show(); 
+	     $('#id_degrees_1').parent('div').show(); 
+	     $('#id_degrees_2').parent('div').show();
 	 } else {
-	     $('#id_rotation').parent('div').hide(); 
-	     $('#id_rotation_0').parent('div').hide(); 
-	     $('#id_rotation_1').parent('div').hide(); 
-	     $('#id_rotation_2').parent('div').hide(); 
+	     $('#id_degrees').parent('div').hide(); 
+	     $('#id_degrees_0').parent('div').hide(); 
+	     $('#id_degrees_1').parent('div').hide(); 
+	     $('#id_degrees_2').parent('div').hide(); 
 	 }
      });
      $('#id_width').change(function(){
-         if($("#id_action input[type='radio']:checked").val() == 'resize' && $('#id_width').val() == '' &&  $('#id_height').val() == '' ) {
-	     $('#id_resize').parent('div').show();
+         if($("#id_actions input[type='radio']:checked").val() == 'resize' && $('#id_width').val() == '' &&  $('#id_height').val() == '' ) {
+	     $('#id_resize_percent').parent('div').show();
 	 } else {
-	     $('#id_resize').parent('div').hide();
+	     $('#id_resize_percent').parent('div').hide();
 	 }
      });
      $('#id_height').change(function(){
-         if($().val("#id_action input[type='radio']:checked") == 'resize' && $('#id_width').val() == '' &&  $('#id_height').val() == '' ) {
-	     $('#id_resize').parent('div').show();
+         if($().val("#id_actions input[type='radio']:checked") == 'resize' && $('#id_width').val() == '' &&  $('#id_height').val() == '' ) {
+	     $('#id_resize_percent').parent('div').show();
 	 } else {
-	     $('#id_resize').parent('div').hide();
+	     $('#id_resize_percent').parent('div').hide();
 	 }
      });
-     $('#id_resize').change(function(){
-         if($("#id_action input[type='radio']:checked").val() == 'resize' && $('#id_resize').val() == '') {
+     $('#id_resize_percent').change(function(){
+         if($("#id_actions input[type='radio']:checked").val() == 'resize' && $('#id_resize_percent').val() == '') {
 	     $('#id_width').parent('div').show(); 
 	     $('#id_height').parent('div').show(); 
          } else {

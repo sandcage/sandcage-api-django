@@ -80,7 +80,7 @@ def parse_task_data(request):
 
     # conditional and optional
     if actions == 'rotate':
-        add_optional_post_key(request, task, 'rotation')
+        add_optional_post_key(request, task, 'degrees')
                 
     # conditional and optional
     if actions == 'cover':
@@ -115,11 +115,12 @@ def scheduled_tasks_post(request):
     # And save payload to session
     request.session['payload'] = payload
     return HttpResponseRedirect(reverse('apigui:tasks'))
+
     
 def scheduled_tasks(request):
     if request.method == 'POST':
-        scheduled_tasks_post(request)
-
+        return scheduled_tasks_post(request)
+    
     else:
         # GET (show results, or display the input form)
         context = {'nbar': 'tasks',
@@ -137,7 +138,7 @@ def scheduled_tasks(request):
             # Display the form for data
             form = TasksForm()
             context['form'] = form
-    return render(request, 'apigui/tasks.html', context)
+        return render(request, 'apigui/tasks.html', context)
 
 def edit_apikey(request):
     form = ApiKeyForm(initial={'apikey': request.session['apikey']})
