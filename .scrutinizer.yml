@@ -2,3 +2,12 @@ checks:
     python:
         code_rating: true
         duplicate_code: true
+
+build:
+    tests:
+        override:
+            -
+                command: 'cd src && python manage.py test'
+                coverage:
+                    file: '.coverage'
+                    format: 'py-cc'        
