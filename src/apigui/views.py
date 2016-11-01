@@ -56,22 +56,7 @@ def files(request):
             
     return render(request, 'apigui/files.html', context)
 
-def scheduled_tasks_post(request):
-    form = TasksForm(request.POST)
-    if not form.is_valid():
-        # The form is not valid, so show it again to the user
-        context = {'nbar': 'tasks',
-                   'valid_apikey': get_apikey_validity(request),
-                   'form': form}
-        return render(request, 'apigui/tasks.html', context)
-    
-    # The form is valid    
-    # Generate payload
-    payload = {}
-
-    # optional key
-    add_optional_post_key(request, payload, 'callback_url')
-
+def parse_task_data(request):
     # Let's parse the task parameters
     task = {'overwrite_file': request.POST['overwrite_file']}
 
@@ -102,7 +87,26 @@ def scheduled_tasks_post(request):
         task['cover'] = ','.join(request.POST.getlist('cover'))
         add_optional_post_key(request, task, 'width')
         add_optional_post_key(request, task, 'height')
+    return task
 
+def scheduled_tasks_post(request):
+    form = TasksForm(request.POST)
+    if not form.is_valid():
+        # The form is not valid, so show it again to the user
+        context = {'nbar': 'tasks',
+                   'valid_apikey': get_apikey_validity(request),
+                   'form': form}
+        return render(request, 'apigui/tasks.html', context)
+    
+    # The form is valid    
+    # Generate payload
+    payload = {}
+
+    # optional key
+    add_optional_post_key(request, payload, 'callback_url')
+
+    # parse task data
+    task = parse_task_data(request)
 
     # Add url and task to job, and job to the payload
     payload['jobs'] = [{'url': request.POST['url'],
