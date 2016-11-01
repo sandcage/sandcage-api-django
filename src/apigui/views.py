@@ -16,9 +16,12 @@ from .services import sc_list_files_service
 from .services import sc_destroy_files_service
 from .services import sc_schedule_files_service
 
-def index(request):
-    context = {'nbar': 'home',
+def get_common_context(request, label):
+    return {'nbar': label,
                'valid_apikey': get_apikey_validity(request)}
+
+def index(request):
+    context = get_common_context(request, 'home')
     return render(request, 'apigui/index.html', context)
 
 def files(request):
@@ -37,8 +40,7 @@ def files(request):
             return HttpResponseRedirect(reverse('apigui:files'))
     else:
         # GET (show results, or display the input form)
-        context = {'nbar': 'files',
-                   'valid_apikey': get_apikey_validity(request)}
+        context = get_common_context(request, 'files')
         
 
         # Take payload from session
@@ -93,9 +95,8 @@ def scheduled_tasks_post(request):
     form = TasksForm(request.POST)
     if not form.is_valid():
         # The form is not valid, so show it again to the user
-        context = {'nbar': 'tasks',
-                   'valid_apikey': get_apikey_validity(request),
-                   'form': form}
+        context = get_common_context(request, 'tasks')
+        context['form'] = form
         return render(request, 'apigui/tasks.html', context)
     
     # The form is valid    
@@ -123,8 +124,7 @@ def scheduled_tasks(request):
     
     else:
         # GET (show results, or display the input form)
-        context = {'nbar': 'tasks',
-                   'valid_apikey': get_apikey_validity(request)}
+        context = get_common_context(request, 'tasks')
 
         # Take payload from session
         if 'payload' in request.session:
@@ -142,9 +142,8 @@ def scheduled_tasks(request):
 
 def edit_apikey(request):
     form = ApiKeyForm(initial={'apikey': request.session['apikey']})
-    context = {'nbar': 'apikey',
-               'valid_apikey': get_apikey_validity(request),
-               'form': form}
+    context = get_common_context(request, 'apikey')
+    context['form'] = form
     return render(request, 'apigui/apikey.html', context)
     
 def apikey(request):
@@ -161,17 +160,15 @@ def apikey(request):
         return HttpResponseRedirect(reverse('apigui:apikey'))
     
     form = ApiKeyForm()
-    context = {'nbar': 'apikey',
-               'valid_apikey': get_apikey_validity(request),
-               'form': form}
+    context = get_common_context(request, 'apikey')
+    context['form'] = form
     if 'apikey' in request.session:
         context.update({'apikey': request.session['apikey']})
         
     return render(request, 'apigui/apikey.html', context)
 
 def info(request): 
-    context = {'nbar': 'info',
-               'valid_apikey': get_apikey_validity(request)}
+    context = get_common_context(request, 'info')
     if request.method == 'POST':
         form = InfoForm(request.POST)
         if form.is_valid():
@@ -207,8 +204,7 @@ def info(request):
     return render(request, 'apigui/info.html', context)
 
 def destroy(request):
-    context = {'nbar': 'destroy',
-               'valid_apikey': get_apikey_validity(request)}
+    context = get_common_context(request, 'destroy')
     if request.method == 'GET':
         # GET (show request response, or display form for input)
 
