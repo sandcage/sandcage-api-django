@@ -1,29 +1,18 @@
-#from django.test import LiveServerTestCase
-#from selenium import webdriver
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from selenium.webdriver.firefox.webdriver import WebDriver
+from django.test import LiveServerTestCase
+from selenium import webdriver
 
-class SeleniumTestCase(StaticLiveServerTestCase):
+class SeleniumTestCase(LiveServerTestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        super(SeleniumTestCase, cls).setUpClass()
-        cls.client = WebDriver()
-        cls.client.implicitly_wait(10)
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.client.quit()
-        super(SeleniumTestCase, cls).tearDownClass()
-
+    def setUp(self):
+        self.client = webdriver.PhantomJS()
 
     def case_for_all_functions(self, address, should_find):
         # Navigate to the get ingo page
-        response = self.client.get(self.live_server_url + address)
+        self.client.get(self.live_server_url + address)
 
         # Find the submit button
         btn = self.client.find_element_by_xpath("//*[@class='btn btn-primary']")
-        response = btn.click()
+        btn.click()
 
         # Get all list elements
         lis = self.client.find_elements_by_tag_name("li")
