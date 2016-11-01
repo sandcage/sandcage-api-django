@@ -1,12 +1,22 @@
-django-sandcage is an demo app of Django UI to SandCage's API. The API documentation can be found at `SandCage's API documentation <https://www.sandcage.com/docs/0.2/>`_
+.. image:: https://d18m5nnl28b2pp.cloudfront.net/p/a/img/header.png
+
+-------------------------------------------------------------------
+
+
+.. image:: https://scrutinizer-ci.com/g/sandcage/sandcage-api-django/badges/quality-score.png?b=master
+    :target: https://scrutinizer-ci.com/g/sandcage/sandcage-api-django/?branch=master
+.. image:: https://travis-ci.org/sandcage/sandcage-api-django.svg?branch=master
+    :target: https://travis-ci.org/sandcage/sandcage-api-django
+
+sandcage-api-django is an demo app of Django UI to SandCage's API. The API documentation can be found at `SandCage's API documentation <https://www.sandcage.com/docs/0.2/>`_
 
 
 Table of Contents
 -----------------
-* `Requirements <https://github.com/sandcage/sandcage-api-django/tree/dev#requirements>`_
-* `Installation <https://github.com/sandcage/sandcage-api-django/tree/dev#installation>`_
-* `Usage <https://github.com/sandcage/sandcage-api-django/tree/dev#usage>`_
-* `Contributing <https://github.com/sandcage/sandcage-api-django/tree/dev#contributing>`_
+* `Requirements <https://github.com/sandcage/sandcage-api-django#requirements>`_
+* `Installation <https://github.com/sandcage/sandcage-api-django#installation>`_
+* `Usage <https://github.com/sandcage/sandcage-api-django#usage>`_
+* `Contributing <https://github.com/sandcage/sandcage-api-django#contributing>`_
 * `Contact Us <https://www.sandcage.com/contact>`_
 
 
@@ -37,8 +47,8 @@ This example is using virtual environment (this is not the only possible way to 
   virtualenv -p python3 virtual3
   cd virtual3
   source bin/activate
-  git clone path_to_package
-  cd sandcage-django
+  git clone https://github.com/sandcage/sandcage-api-django
+  cd sandcage-api-django
   pip install -r requirements.txt
   cd src
   python manage.py migrate
@@ -58,7 +68,7 @@ Contributing
 
 We are open to suggestions and code revisions, however there are some rules and limitations that you might want to consider first.
 
-- Code that you contribute will automatically be licensed under the `Apache License Version 2.0 <https://github.com/sandcage/sandcage-api-python/blob/master/LICENSE>`_.
+- Code that you contribute will automatically be licensed under the `Apache License Version 2.0 <https://github.com/sandcage/sandcage-api-django/blob/master/LICENSE>`_.
 - Third party code will be reviewed, tested and possibly modified before being released.
 
 These basic rules help ensure that this code remains Open Source and compatible with Apache 2.0 license. All contributions will be added to the changelog and appear in every release.
