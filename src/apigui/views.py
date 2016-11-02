@@ -24,39 +24,32 @@ def index(request):
     context = get_common_context(request, 'home')
     return render(request, 'apigui/index.html', context)
 
-def files(request):
-    if request.method == 'POST':
-        form = ListFilesForm(request.POST)
-        if form.is_valid():
-
-            # Generate payload
-            payload = {}
-            keys = ['directory', 'page', 'results_per_page']
-            for key in keys:
-                add_optional_post_key(request, payload, key)
-
-            # And save payload to session
-            request.session['payload'] = payload
-            return HttpResponseRedirect(reverse('apigui:files'))
-    else:
-        # GET (show results, or display the input form)
-        context = get_common_context(request, 'files')
-        
-
-        # Take payload from session
-        if 'payload' in request.session:
-            results = sc_list_files_service(get_apikey(request),
-                                    request.session['payload'])
-            context['results'] = results
-
-            # Delete the already used payload from the session
-            del request.session['payload']
-        else:
-            # Display the form for data
-            form = ListFilesForm()
-            context['form'] = form
-            
+def invalid_form(request, form, label, template):
+    context = get_common_context(request, 'files')
+    context['form'] = form
     return render(request, 'apigui/files.html', context)
+    
+def files(request):
+    if request.method == 'GET':
+        return general_get_routines(request, 'files',
+                                    ListFilesForm(),
+                                    sc_list_files_service,
+                                    'apigui/files.html')
+
+    # Request is POST
+    form = ListFilesForm(request.POST)
+    if not form.is_valid():
+        return invalid_form(request, form, 'files', 'apigui/files.html')
+            
+    # Generate payload
+    payload = {}
+    keys = ['directory', 'page', 'results_per_page']
+    for key in keys:
+        add_optional_post_key(request, payload, key)
+
+    # And save payload to session
+    request.session['payload'] = payload
+    return HttpResponseRedirect(reverse('apigui:files'))
 
 def parse_task_data(request):
     # Let's parse the task parameters
@@ -95,9 +88,7 @@ def scheduled_tasks_post(request):
     form = TasksForm(request.POST)
     if not form.is_valid():
         # The form is not valid, so show it again to the user
-        context = get_common_context(request, 'tasks')
-        context['form'] = form
-        return render(request, 'apigui/tasks.html', context)
+        return invalid_form(request, form, 'tasks', 'apigui/tasks.html')
     
     # The form is valid    
     # Generate payload
@@ -142,9 +133,7 @@ def scheduled_tasks(request):
 
 def edit_apikey(request):
     form = ApiKeyForm(initial={'apikey': request.session['apikey']})
-    context = get_common_context(request, 'apikey')
-    context['form'] = form
-    return render(request, 'apigui/apikey.html', context)
+    return invalid_form(request, form, 'apikey', 'apigui/apikey.html')
     
 def apikey(request):
     if request.method == 'POST':
@@ -158,7 +147,8 @@ def apikey(request):
             request.session['apikey'] = apikey
 
         return HttpResponseRedirect(reverse('apigui:apikey'))
-    
+
+    # GET, show form
     form = ApiKeyForm()
     context = get_common_context(request, 'apikey')
     context['form'] = form
@@ -170,9 +160,7 @@ def apikey(request):
 def info_post(request):
     form = InfoForm(request.POST)
     if not form.is_valid():
-        context = get_common_context(request, 'info')
-        context['form'] = form
-        return render(request, 'apigui/info.html', context)
+        return invalid_form(request, form, 'info', 'apigui/info.html')
         
     # Generate payload
     payload = {}
@@ -186,67 +174,61 @@ def info_post(request):
     return HttpResponseRedirect(reverse('apigui:info'))
     
 def info(request):
-    if request.method == 'POST':
-        return info_post(request)
+    if request.method == 'GET':
+        return general_get_routines(request, 'info',
+                                    InfoForm(),
+                                    sc_get_info_service,
+                                    'apigui/info.html')
     
     else:
-        # GET (show results, or display form for input)
-        # Take payload from session
-        context = get_common_context(request, 'info')
-        if 'payload' in request.session:
-            results = sc_get_info_service(get_apikey(request),
-                                    request.session['payload'])
-            context['results'] = results
-
-            # Delete the already used payload from the session
-            del request.session['payload']
-        else:
-            # Display the form for data
-            form = InfoForm()
-            context['form'] = form
-            
-        return render(request, 'apigui/info.html', context)
+        return info_post(request)
 
 def destroy(request):
-    context = get_common_context(request, 'destroy')
     if request.method == 'GET':
-        # GET (show request response, or display form for input)
+        return general_get_routines(request, 'destroy',
+                                    DestroyFilesForm(),
+                                    sc_destroy_files_service,
+                                    'apigui/destroy.html')
 
-        # Take payload from session
-        if 'payload' in request.session:
-            results = sc_destroy_files_service(get_apikey(request),
-                                    request.session['payload'])
-            context['results'] = results
-
-            # Delete the already used payload from the session
-            del request.session['payload']
-        else:
-            # Display the form for user input
-            form = DestroyFilesForm()
-            context['form'] = form
-
-    else:
-        # Request is POST
-        form = DestroyFilesForm(request.POST)
-        if form.is_valid():
-            # Generate payload
-            payload = {}
-            add_optional_post_key(request, payload, 'callback_url')
-            add_optional_post_key(request, payload, 'request_id')
+    # Request is POST
+    form = DestroyFilesForm(request.POST)
+    if not form.is_valid():
+        return invalid_form(request, form, 'destroy', 'apigui/destroy.html')
             
-            if request.POST['file_token']:
-                payload['files'] = [{'file_token': request.POST['file_token']}]
+    # Generate payload
+    payload = {}
+    add_optional_post_key(request, payload, 'callback_url')
+    add_optional_post_key(request, payload, 'request_id')
+            
+    if request.POST['file_token']:
+        payload['files'] = [{'file_token': request.POST['file_token']}]
+        
+    # Save payload to session
+    request.session['payload'] = payload
+    return HttpResponseRedirect(reverse('apigui:destroy'))
 
-            # Save payload to session
-            request.session['payload'] = payload
-            return HttpResponseRedirect(reverse('apigui:destroy'))
-        else:
-            # If the form is not valid, display it again
-            context['form'] = form
-    return render(request, 'apigui/destroy.html', context)
+def general_get_routines(request, label, form, service_function, template):
+    """ General routines to handle GET request
+    - If session contains 'payload' key, the 
+      SandCage service should be called.
+    - Otherwise a form is displayed for the user.
+    """
+    
+    context = get_common_context(request, label)
 
-def tasks(request):
-    pass
+    # Check whether the payload is in session
+    if 'payload' in request.session:
+        # Make the service call
+        results = service_function(get_apikey(request),
+                                   request.session['payload'])
+        context['results'] = results
+
+        # Delete the already used payload from the session
+        del request.session['payload']
+    else:
+        # Display the form for user input
+        context['form'] = form
+    return render(request, template, context)
     
 def get_apikey(request):
     if 'apikey' in request.session:

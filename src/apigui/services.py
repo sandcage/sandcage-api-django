@@ -14,17 +14,20 @@ def sc_schedule_files_service(apikey, payload):
     response = sc.schedule_files_service(payload)
     return process_response(response)
 
-def sc_list_files_service(apikey, payload):
+def sc_list_files_service(*args):
+    apikey, payload = args
     sc = initialize_sandcage(apikey)
     response = sc.list_files_service(payload)
     return process_response(response)
 
-def sc_get_info_service(apikey, payload):
+def sc_get_info_service(*args):
+    apikey, payload = args
     sc = initialize_sandcage(apikey)
     response = sc.get_info_service(payload)
     return process_response(response)
 
-def sc_destroy_files_service(apikey, payload):
+def sc_destroy_files_service(*args):
+    apikey, payload = args
     sc = initialize_sandcage(apikey)
     response = sc.destroy_files_service(payload)
     return process_response(response)
