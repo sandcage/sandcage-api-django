@@ -198,9 +198,10 @@ def destroy(request):
     # Generate payload
     payload = {}
     add_optional_post_key(request, payload, 'callback_url')
-    add_optional_post_key(request, payload, 'request_id')
             
-    if request.POST['file_token']:
+    if request.POST['reference_id']:
+        payload['files'] = [{'reference_id': request.POST['reference_id']}]
+    elif request.POST['file_token']:
         payload['files'] = [{'file_token': request.POST['file_token']}]
         
     # Save payload to session

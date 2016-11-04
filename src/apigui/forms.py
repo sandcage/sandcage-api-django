@@ -47,7 +47,7 @@ class InfoForm(forms.Form):
                                  required=False)
 
 class DestroyFilesForm(forms.Form):
-    request_id = forms.CharField(label='Request Id', max_length=100,
+    reference_id = forms.CharField(label='Reference Id', max_length=100,
                                  required=False)
     file_token = forms.CharField(label='File token', max_length=100,
                                  required=False)
