@@ -45,9 +45,7 @@ def files(request):
     keys = ['directory', 'page', 'results_per_page']
     payload = generate_payload_with_optional_post_keys(request, keys)
 
-    # And save payload to session
-    request.session['payload'] = payload
-    return HttpResponseRedirect(reverse('apigui:files'))
+    return save_payload_and_redirect(request, payload, 'apigui:files')
 
 def parse_task_data(request):
     # Let's parse the task parameters
@@ -105,9 +103,7 @@ def scheduled_tasks_post(request):
     payload['jobs'] = [{'url': request.POST['url'],
                         'tasks':[task]}]
             
-    # And save payload to session
-    request.session['payload'] = payload
-    return HttpResponseRedirect(reverse('apigui:tasks'))
+    return save_payload_and_redirect(request, payload, 'apigui:tasks')
 
     
 def scheduled_tasks(request):
@@ -169,9 +165,7 @@ def info_post(request):
     if request.POST['file_token']:
         payload['files'] = [{'file_token': request.POST['file_token']}]
 
-    # And save payload to session
-    request.session['payload'] = payload
-    return HttpResponseRedirect(reverse('apigui:info'))
+    return save_payload_and_redirect(request, payload, 'apigui:info')
     
 def info(request):
     if request.method == 'GET':
@@ -203,10 +197,12 @@ def destroy(request):
     elif request.POST['file_token']:
         payload['files'] = [{'file_token': request.POST['file_token']}]
         
-    # Save payload to session
-    request.session['payload'] = payload
-    return HttpResponseRedirect(reverse('apigui:destroy'))
+    return save_payload_and_redirect(request, payload, 'apigui:destroy')
 
+def save_payload_and_redirect(request, payload, address):
+    request.session['payload'] = payload
+    return HttpResponseRedirect(reverse(address))
+    
 def general_get_routines(request, label, form, service_function, template):
     """ General routines to handle GET request
     - If session contains 'payload' key, the 
