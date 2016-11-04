@@ -159,13 +159,10 @@ def info_post(request):
     if not form.is_valid():
         return invalid_form(request, form, 'info', 'apigui/info.html')
         
-    # Generate payload
-    payload = generate_payload_with_optional_post_keys(request, ['request_id'])
-
-    if request.POST['file_token']:
-        payload['files'] = [{'file_token': request.POST['file_token']}]
-
-    return save_payload_and_redirect(request, payload, 'apigui:info')
+    return special_routine(request,
+                           ['request_id'],
+                           ['file_token'],
+                           'apigui:info')
     
 def info(request):
     if request.method == 'GET':
@@ -189,16 +186,23 @@ def destroy(request):
     if not form.is_valid():
         return invalid_form(request, form, 'destroy', 'apigui/destroy.html')
             
-    # Generate payload
-    payload = generate_payload_with_optional_post_keys(request, ['callback_url'])
-            
-    if request.POST['reference_id']:
-        payload['files'] = [{'reference_id': request.POST['reference_id']}]
-    elif request.POST['file_token']:
-        payload['files'] = [{'file_token': request.POST['file_token']}]
+    return special_routine(request,
+                           ['callback_url'],
+                           ['reference_id','file_token'],
+                           'apigui:destroy')
+    
+def special_routine(request, optional_keys, file_keys, address):
+    payload = generate_payload_with_optional_post_keys(request, optional_keys)
+    add_files_to_payload(request, payload, file_keys)
+    return save_payload_and_redirect(request, payload, address)
+    
+def add_files_to_payload(request, payload, keys):
+    for key in keys:
+        # Take the first and use it
+        if request.POST[key]:
+            payload['files'] = [{key: request.POST[key]}]
+            return
         
-    return save_payload_and_redirect(request, payload, 'apigui:destroy')
-
 def save_payload_and_redirect(request, payload, address):
     request.session['payload'] = payload
     return HttpResponseRedirect(reverse(address))
