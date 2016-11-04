@@ -42,10 +42,8 @@ def files(request):
         return invalid_form(request, form, 'files', 'apigui/files.html')
             
     # Generate payload
-    payload = {}
     keys = ['directory', 'page', 'results_per_page']
-    for key in keys:
-        add_optional_post_key(request, payload, key)
+    payload = generate_payload_with_optional_post_keys(request, keys)
 
     # And save payload to session
     request.session['payload'] = payload
@@ -84,6 +82,12 @@ def parse_task_data(request):
         add_optional_post_key(request, task, 'height')
     return task
 
+def generate_payload_with_optional_post_keys(request, keys):
+    payload = {}
+    for key in keys:
+        add_optional_post_key(request, payload, key)
+    return payload
+    
 def scheduled_tasks_post(request):
     form = TasksForm(request.POST)
     if not form.is_valid():
@@ -92,10 +96,7 @@ def scheduled_tasks_post(request):
     
     # The form is valid    
     # Generate payload
-    payload = {}
-
-    # optional key
-    add_optional_post_key(request, payload, 'callback_url')
+    payload = generate_payload_with_optional_post_keys(request, ['callback_url'])
 
     # parse task data
     task = parse_task_data(request)
@@ -163,8 +164,7 @@ def info_post(request):
         return invalid_form(request, form, 'info', 'apigui/info.html')
         
     # Generate payload
-    payload = {}
-    add_optional_post_key(request, payload, 'request_id')
+    payload = generate_payload_with_optional_post_keys(request, ['request_id'])
 
     if request.POST['file_token']:
         payload['files'] = [{'file_token': request.POST['file_token']}]
@@ -196,8 +196,7 @@ def destroy(request):
         return invalid_form(request, form, 'destroy', 'apigui/destroy.html')
             
     # Generate payload
-    payload = {}
-    add_optional_post_key(request, payload, 'callback_url')
+    payload = generate_payload_with_optional_post_keys(request, ['callback_url'])
             
     if request.POST['reference_id']:
         payload['files'] = [{'reference_id': request.POST['reference_id']}]
