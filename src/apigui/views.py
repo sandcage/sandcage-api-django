@@ -47,6 +47,11 @@ def files(request):
 
     return save_payload_and_redirect(request, payload, 'apigui:files')
 
+def check_for_action(request, task, action, key):
+    action = task['actions']
+    if action == action:
+        add_optional_post_key(request, task, key)
+
 def parse_task_data(request):
     # Let's parse the task parameters
     task = {'overwrite_file': request.POST['overwrite_file']}
@@ -56,9 +61,9 @@ def parse_task_data(request):
     for key in keys:
         add_optional_post_key(request, task, key)
 
-    actions = task['actions']
+    action = task['actions']
     # conditional
-    if actions == 'resize':
+    if action == 'resize':
         if request.POST['resize_percent']:
             task['resize_percent'] = float(request.POST['resize_percent'])
         else:
@@ -66,15 +71,11 @@ def parse_task_data(request):
             task['height'] = request.POST['height']
 
     # conditional and optional
-    if actions == 'crop':
-        add_optional_post_key(request, task, 'coords')
+    check_for_action(request, task, 'crop', 'coords')
+    check_for_action(request, task, 'rotate', 'degrees')
 
     # conditional and optional
-    if actions == 'rotate':
-        add_optional_post_key(request, task, 'degrees')
-                
-    # conditional and optional
-    if actions == 'cover':
+    if action == 'cover':
         task['cover'] = ','.join(request.POST.getlist('cover'))
         add_optional_post_key(request, task, 'width')
         add_optional_post_key(request, task, 'height')
