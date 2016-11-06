@@ -47,11 +47,24 @@ def files(request):
 
     return save_payload_and_redirect(request, payload, 'apigui:files')
 
-def check_for_action(request, task, action, key):
-    action = task['actions']
-    if action == action:
+def check_for_action(request, task, action_key, key):
+    if task['actions'] == action_key:
         add_optional_post_key(request, task, key)
 
+def check_resize(request, task):
+    if task['actions'] == 'resize':
+        if request.POST['resize_percent']:
+            task['resize_percent'] = float(request.POST['resize_percent'])
+        else:
+            task['width'] = request.POST['width']
+            task['height'] = request.POST['height']
+
+def check_cover(request, task):
+    if  task['actions'] == 'cover':
+        task['cover'] = ','.join(request.POST.getlist('cover'))
+        add_optional_post_key(request, task, 'width')
+        add_optional_post_key(request, task, 'height')
+        
 def parse_task_data(request):
     # Let's parse the task parameters
     task = {'overwrite_file': request.POST['overwrite_file']}
@@ -61,24 +74,11 @@ def parse_task_data(request):
     for key in keys:
         add_optional_post_key(request, task, key)
 
-    action = task['actions']
-    # conditional
-    if action == 'resize':
-        if request.POST['resize_percent']:
-            task['resize_percent'] = float(request.POST['resize_percent'])
-        else:
-            task['width'] = request.POST['width']
-            task['height'] = request.POST['height']
-
-    # conditional and optional
+    # Add options to task
+    check_resize(request, task)
     check_for_action(request, task, 'crop', 'coords')
     check_for_action(request, task, 'rotate', 'degrees')
-
-    # conditional and optional
-    if action == 'cover':
-        task['cover'] = ','.join(request.POST.getlist('cover'))
-        add_optional_post_key(request, task, 'width')
-        add_optional_post_key(request, task, 'height')
+    check_cover(request, task)
     return task
 
 def generate_payload_with_optional_post_keys(request, keys):
